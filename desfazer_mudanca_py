@@ -1,0 +1,45 @@
+import pandas as pd
+import os
+import shutil
+
+# Carregar o CSV que contém os caminhos originais
+csv_path = '/home/filhoij/Documents/CEIA/disfluency/projeto_residual_bi_lstm/data/train/meta_data_treino.csv'
+df = pd.read_csv(csv_path)
+
+# Diretórios onde os arquivos foram movidos
+source_dirs = [
+    '/home/filhoij/Documents/CEIA/disfluency/projeto_residual_bi_lstm/data/train/NURC_RE/'
+]
+
+base_dir = '/home/filhoij/Documents/CEIA/disfluency/projeto_residual_bi_lstm/data/'
+
+# Iterar sobre cada diretório de origem
+for source_dir in source_dirs:
+    for file_name in os.listdir(source_dir):
+        # Caminho completo do arquivo na pasta atual
+        source_path = os.path.join(source_dir, file_name)
+        
+        # Verifique se é um arquivo (não mover diretórios)
+        if os.path.isfile(source_path):
+            # Encontrar o caminho correto a partir do DataFrame
+            match = df[df['file_path'].str.contains(file_name)]
+            
+            if not match.empty:
+                # Obter o caminho original do arquivo
+                correct_path = match['file_path'].values[0]
+                
+                # Criar o caminho de destino completo
+                dest_path = os.path.join(base_dir, correct_path)
+                
+                # Verifique se o caminho de origem e destino são iguais
+                if os.path.abspath(source_path) == os.path.abspath(dest_path):
+                    print(f"O arquivo {file_name} já está no caminho correto.")
+                    continue
+                
+                # Mover o arquivo de volta para o caminho correto
+                shutil.move(source_path, dest_path)
+                print(f"Movido: {file_name} -> {dest_path}")
+            else:
+                print(f"Arquivo {file_name} não encontrado no DataFrame.")
+
+print("Arquivos movidos de volta para a pasta correta com sucesso!")

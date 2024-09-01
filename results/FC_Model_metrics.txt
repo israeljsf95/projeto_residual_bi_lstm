@@ -1,0 +1,31 @@
+Train Metrics:
+              precision    recall  f1-score   support
+
+         0.0       0.90      0.99      0.94    269412
+         1.0       0.96      0.74      0.83    112846
+
+    accuracy                           0.91    382258
+   macro avg       0.93      0.86      0.89    382258
+weighted avg       0.92      0.91      0.91    382258
+
+
+Dev Metrics:
+              precision    recall  f1-score   support
+
+         0.0       0.85      0.97      0.91      7798
+         1.0       0.94      0.73      0.82      4878
+
+    accuracy                           0.88     12676
+   macro avg       0.90      0.85      0.87     12676
+weighted avg       0.89      0.88      0.88     12676
+
+
+Test Metrics:
+              precision    recall  f1-score   support
+
+         0.0       0.90      0.94      0.92      5123
+         1.0       0.86      0.78      0.82      2399
+
+    accuracy                           0.89      7522
+   macro avg       0.88      0.86      0.87      7522
+weighted avg       0.89      0.89      0.89      7522

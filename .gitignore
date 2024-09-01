@@ -1,0 +1,8 @@
+# Ignorar pastas data e coraa
+data/
+coraa/
+
+# Outros exemplos comuns de exclusões
+*.pyc
+__pycache__/
+.env
