@@ -62,7 +62,6 @@ if __name__ == "__main__":
     model = ResNet18(ResidualBlock, [2, 2, 2, 2])
     print(model)
     
-    # Exemplo de entrada: batch de 10 espectrogramas com 1 canal, 257xT dimensões
-    x = torch.randn(10, 1, 64, 401)
+    x = torch.randn(10, 1, 257, 450)
     features = model(x)
     print(features.shape)  # Deve resultar em (10, 512)

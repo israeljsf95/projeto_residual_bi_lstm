@@ -1,8 +1,9 @@
 # Ignorar pastas data e coraa
 data/
 coraa/
-
+checkpoints/
 # Outros exemplos comuns de exclusões
 *.pyc
 __pycache__/
 .env
+*.ipynb_checkpoints

@@ -14,7 +14,7 @@ from tqdm import tqdm
 import torch.multiprocessing as mp
 
 
-def train_and_evaluate(model, dataloader_tr, dataloader_dev, dataloader_test, criterion, optimizer, num_epochs=25, device='cuda'):
+def train_and_evaluate(model, dataloader_tr, dataloader_dev, dataloader_test, criterion, optimizer, num_epochs=25, device='cuda', model_name='model'):
     model = model.to(device)
     history = {
         'train_loss': [], 'dev_loss': [], 'test_loss': [],
@@ -34,7 +34,7 @@ def train_and_evaluate(model, dataloader_tr, dataloader_dev, dataloader_test, cr
         all_labels_tr = []
         all_preds_tr = []
 
-        for inputs, labels in tqdm(dataloader_tr, leave = True, desc = "Training Batches"):
+        for inputs, labels in tqdm(dataloader_tr, leave=True, desc="Training Batches"):
             inputs, labels = inputs.to(device), labels.to(device).float()
             
             optimizer.zero_grad()
@@ -57,6 +57,10 @@ def train_and_evaluate(model, dataloader_tr, dataloader_dev, dataloader_test, cr
 
         history['train_loss'].append(train_loss)
         history['train_acc'].append(train_acc)
+
+        # Salvar o modelo e o otimizador após cada época
+        print(model_name)
+        save_checkpoint(model, optimizer, epoch + 1, train_loss, model_name)
 
         # Avaliação no conjunto de validação (dev)
         if dataloader_dev is not None:
@@ -139,8 +143,8 @@ def save_results(history, labels_tr, preds_tr, labels_dev, preds_dev, labels_tes
     plt.plot(history['train_loss'], label='Train Loss')
     if 'dev_loss' in history:
         plt.plot(history['dev_loss'], label='Dev Loss')
-    if 'test_loss' in history:
-        plt.plot(history['test_loss'], label='Test Loss')
+    # if 'test_loss' in history:
+    #     plt.plot(history['test_loss'], label='Test Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.legend()
@@ -151,8 +155,8 @@ def save_results(history, labels_tr, preds_tr, labels_dev, preds_dev, labels_tes
     plt.plot(history['train_acc'], label='Train Accuracy')
     if 'dev_acc' in history:
         plt.plot(history['dev_acc'], label='Dev Accuracy')
-    if 'test_acc' in history:
-        plt.plot(history['test_acc'], label='Test Accuracy')
+    # if 'test_acc' in history:
+    #     plt.plot(history['test_acc'], label='Test Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
     plt.legend()
@@ -216,6 +220,32 @@ def save_results(history, labels_tr, preds_tr, labels_dev, preds_dev, labels_tes
     print(f'Results saved in {results_dir}')
 
 
+def save_checkpoint(model, optimizer, epoch, loss, model_name):
+    checkpoint_dir = 'checkpoints'
+    os.makedirs(checkpoint_dir, exist_ok=True)
+
+    checkpoint_path = os.path.join(checkpoint_dir, f'{model_name}_epoch_{epoch}.pth')
+
+    torch.save({
+        'epoch': epoch,
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'loss': loss,
+    }, checkpoint_path)
+
+    print(f'Checkpoint saved: {checkpoint_path}')
+
+
+def load_checkpoint(model, optimizer, checkpoint_path):
+    checkpoint = torch.load(checkpoint_path)
+    model.load_state_dict(checkpoint['model_state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    epoch = checkpoint['epoch']
+    loss = checkpoint['loss']
+
+    print(f'Checkpoint loaded: {checkpoint_path}, Epoch: {epoch}, Loss: {loss}')
+    return model, optimizer, epoch, loss
+
 if __name__ == "__main__":
 
     #melhorando o processsamento cuda
@@ -247,7 +277,7 @@ if __name__ == "__main__":
 
     print("Training model with fully connected layers...")
     history_fc, labels_tr_fc, preds_tr_fc, labels_dev_fc, preds_dev_fc, labels_test_fc, preds_test_fc = train_and_evaluate(
-        model_fc, dataloader_tr, dataloader_dev, dataloader_test, criterion, optimizer_fc, num_epochs=num_epochs, device='cuda')
+        model_fc, dataloader_tr, dataloader_dev, dataloader_test, criterion, optimizer_fc, num_epochs=num_epochs, device='cuda', model_name = 'FC_Model')
     
     save_results(history_fc, labels_tr_fc, preds_tr_fc, labels_dev_fc, preds_dev_fc, labels_test_fc, preds_test_fc, 'FC_Model')
     
@@ -257,5 +287,5 @@ if __name__ == "__main__":
 
     print("\nTraining model with BiLSTM...")
     history_lstm, labels_tr_lstm, preds_tr_lstm, labels_dev_lstm, preds_dev_lstm, labels_test_lstm, preds_test_lstm = train_and_evaluate(
-        model_lstm, dataloader_tr, dataloader_dev, dataloader_test, criterion, optimizer_lstm, num_epochs=num_epochs, device='cuda')
+        model_lstm, dataloader_tr, dataloader_dev, dataloader_test, criterion, optimizer_lstm, num_epochs=num_epochs, device='cuda', model_name = 'LSTM_Model')
     save_results(history_lstm, labels_tr_lstm, preds_tr_lstm, labels_dev_lstm, preds_dev_lstm, labels_test_lstm, preds_test_lstm, 'LSTM_Model')
