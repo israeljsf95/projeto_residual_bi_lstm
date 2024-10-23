@@ -2,6 +2,7 @@
 data/
 coraa/
 checkpoints/
+results/
 # Outros exemplos comuns de exclusões
 *.pyc
 __pycache__/
