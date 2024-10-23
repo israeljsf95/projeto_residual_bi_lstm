@@ -5,7 +5,6 @@ import torchaudio
 import pandas as pd
 from tqdm import tqdm
 
-# Function to create label mapping from DataFrame
 def create_label_mapping(data):
     label_mapping = {}
     for _, row in data.iterrows():
@@ -23,7 +22,6 @@ def create_label_mapping(data):
         label_mapping[audio_path] = label
     return label_mapping
 
-# Custom dataset class
 class CustomSpeechDataset(torch.utils.data.Dataset):
     def __init__(self, audio_paths, label_mapping, transform=None, n_fft=512,
                  window_length=400, hop_length=160, n_mels=100, dl_type = 'training',  device='cuda'):
@@ -108,7 +106,6 @@ class CustomSpeechDataset(torch.utils.data.Dataset):
         
         return spectrogram, label
 
-# Function to create a DataLoader
 def create_dataloader(data, batch_size=32, shuffle=True, transform=None, dl_type = 'training', device='cuda'):
     
     
@@ -125,7 +122,6 @@ def create_dataloader(data, batch_size=32, shuffle=True, transform=None, dl_type
     
     return dataloader
 
-# Example of usage
 if __name__ == "__main__":
     flu_bank_path = "/home/filhoij/Documents/CEIA/disfluency/projeto_residual_bi_lstm/data/SEP28K/fluencybank_labels.csv"
     sep28_bank_path = "/home/filhoij/Documents/CEIA/disfluency/projeto_residual_bi_lstm/data/SEP28K/SEP-28k_labels.csv"

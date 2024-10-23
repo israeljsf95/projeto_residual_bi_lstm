@@ -31,7 +31,6 @@ class FeatureExtractor:
         """
         return self.mel_spectrogram(audio_clip)
 
-# Exemplo de uso:
 if __name__ == "__main__":
     sample_rate = 16000  # fs 
     audio_length = 4 * sample_rate

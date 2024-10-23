@@ -110,7 +110,6 @@ def create_dataloader(data, batch_size=32, shuffle=True, num_workers=4, transfor
     return dataloader
 
 if __name__ == "__main__":
-    # Exemplo de utilização
 
     file_path = 'data/coraa/test/meta_data_test.csv'
     data = pd.read_csv(file_path)
